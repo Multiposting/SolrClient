@@ -24,13 +24,15 @@ class SolrClient:
                  transport=TransportRequests,
                  devel=False,
                  auth=None,
-                 log=None):
+                 log=None,
+                 format_digits=False):
         self.devel = devel
         self.host = host
         self.transport = transport(self, host=host, auth=auth, devel=devel)
         self.logger = log if log else logging.getLogger(__package__)
         self.schema = Schema(self)
         self.collections = Collections(self, self.logger)
+        self.format_digits = format_digits
 
     def get_zk(self):
         return ZK(self, self.logger)
@@ -108,7 +110,7 @@ class SolrClient:
                                                     *kwargs)
 
         if resp:
-            resp = SolrResponse(resp)
+            resp = SolrResponse(resp, self.format_digits)
             resp.url = con_inf['url']
             return resp
 

@@ -2,7 +2,7 @@ import json
 from .exceptions import *
 
 class SolrResponse:
-    def __init__(self,data):
+    def __init__(self, data, format_digits=False):
         self.data = data
         self.query_time = data['responseHeader']['QTime']
         self.header = data['responseHeader']
@@ -23,10 +23,11 @@ class SolrResponse:
             self.grouped = False
             self.docs = {}
         
-        for doc in self.docs:
-            for field in doc:
-                if type(doc[field]) == str and doc[field].isdigit():
-                    doc[field] = int(doc[field])
+        if format_digits:
+            for doc in self.docs:
+                for field in doc:
+                    if type(doc[field]) == str and doc[field].isdigit():
+                        doc[field] = int(doc[field])
                     
     def get_num_found(self):
         '''
