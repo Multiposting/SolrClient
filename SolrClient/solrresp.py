@@ -62,6 +62,9 @@ class SolrResponse:
         '''
     
         return len(self.docs)
+
+    def has_facets(self):
+        return 'facet_counts' in self.data.keys() and type(self.data['facet_counts']) == dict
     
     def get_facets(self):
         '''
@@ -81,7 +84,7 @@ class SolrResponse:
         if not hasattr(self,'facets'):
             self.facets = {}
             data = self.data
-            if 'facet_counts' in data.keys() and type(data['facet_counts']) == dict:
+            if self.has_facets():
                 if 'facet_fields' in data['facet_counts'].keys() and type(data['facet_counts']['facet_fields']) == dict:
                     for facetfield in data['facet_counts']['facet_fields']:
                         if type(data['facet_counts']['facet_fields'][facetfield] == list):
@@ -121,7 +124,7 @@ class SolrResponse:
         if not hasattr(self,'facet_ranges'):
             self.facet_ranges = {}
             data = self.data
-            if 'facet_counts' in data.keys() and type(data['facet_counts']) == dict:
+            if self.has_facets():
                 if 'facet_ranges' in data['facet_counts'].keys() and type(data['facet_counts']['facet_ranges']) == dict:
                     for facetfield in data['facet_counts']['facet_ranges']:
                         if type(data['facet_counts']['facet_ranges'][facetfield]['counts']) == list:
