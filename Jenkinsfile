@@ -15,7 +15,7 @@ jenkinsTemplate(nodeLabel, ['docker', 'python35']) {
 
     }
 
-    if (env.BRANCH_NAME == 'mp-version') {
+    if (env.BRANCH_NAME == 'mp') {
         continuePipeline = true
     }
 
@@ -38,7 +38,7 @@ jenkinsTemplate(nodeLabel, ['docker', 'python35']) {
             }
 
             stage ('Publish on PyPi') {
-                withCredentials([file(credentialsId: '29f1b3af-5644-48b3-bffc-6ca34b1e0c3e', variable: 'pypirc')]) {
+                withCredentials([file(credentialsId: 'pypirc', variable: 'pypirc')]) {
                     container('python') {
                         sh "twine upload --config-file $pypirc --repository internal dist/*"
                     }
