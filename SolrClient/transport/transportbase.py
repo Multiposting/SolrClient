@@ -36,7 +36,9 @@ class TransportBase:
         the query fails on the first one.
         '''
         def inner(self, **kwargs):
+            remaining = len(self.HOST_CONNECTIONS)
             for host in self.HOST_CONNECTIONS:
+                remaining -= 1
 
                 try:
                     return function(self, host, **kwargs)
@@ -46,7 +48,7 @@ class TransportBase:
                 except ConnectionError as e:
                     self.logger.error("Tried connecting to Solr, but couldn't because of the following exception.")
                     self.logger.exception(e)
-                    if '401' in e.__str__():
+                    if '401' in e.__str__() or not remaining:
                         raise
         return inner
 
